@@ -1,21 +1,39 @@
 [project]
 name = "burn-emulator"
-description = ""
-authors = []
+authors = ["Burn Emulator Team"]
+description = "A framework for token burning and emulation on Stacks"
 telemetry = false
-cache_dir = "./.cache"
+requirements = []
 
-# [contracts.counter]
-# path = "contracts/counter.clar"
+[contracts.authorization-manager]
+path = "contracts/authorization-manager.clar"
+depends_on = []
+
+[contracts.burn-registry]
+path = "contracts/burn-registry.clar"
+depends_on = ["authorization-manager"]
+
+[contracts.event-logger]
+path = "contracts/event-logger.clar"
+depends_on = ["authorization-manager"]
+
+[contracts.token-adapter]
+path = "contracts/token-adapter.clar"
+depends_on = ["authorization-manager"]
+
+[contracts.burn-emulator]
+path = "contracts/burn-emulator.clar"
+depends_on = ["burn-registry", "token-adapter", "event-logger"]
+
+[repl]
+costs_version = 2
+parser_version = 2
 
 [repl.analysis]
 passes = ["check_checker"]
-check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
 
-# Check-checker settings:
-# trusted_sender: if true, inputs are trusted after tx_sender has been checked.
-# trusted_caller: if true, inputs are trusted after contract-caller has been checked.
-# callee_filter: if true, untrusted data may be passed into a private function without a
-# warning, if it gets checked inside. This check will also propagate up to the
-# caller.
-# More informations: https://www.hiro.so/blog/new-safety-checks-in-clarinet
+[repl.analysis.check_checker]
+strict = false
+trusted_sender = false
+trusted_caller = false
+callee_filter = false
